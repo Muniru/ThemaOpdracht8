@@ -1,0 +1,43 @@
+---
+title: "Thema_08_Mrna"
+author: "Sam Nelen"
+date: '2022-05-10'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# 1.0 Opdracht
+1. De R en de m zijn beide parameters, terwijl r een constante is.
+2. https://arep.med.harvard.edu/pdf/Chen99.pdf
+3. 
+
+# 2.0 Opdracht
+```{r}
+library(deSolve)
+
+steady_params <- c(m= 10, r = 0.1)
+incr_params <- c(m= 12, r = 0.1)
+decr_params <- c(m = 8, r = 0.1)
+
+volume <- function(t, R, parms){
+  with(as.list(c(parms)), {
+    dR <- - r * R + m
+    return(list(c(dR)))
+    }
+    )
+}
+
+state <- c(Volume = 100)
+times <- seq(0, 100, by = 1)
+
+steady <- ode(times = times, y = state, parms = steady_params, func = volume, method = "euler")
+increasing <- ode(times = times, y = state, parms = incr_params, func = volume, method = "euler")
+decreasing <- ode(times = times, y = state, parms = decr_params, func = volume, method = "euler")
+
+
+plot(steady, col = "Red")
+lines(increasing, col = "Green")
+lines(decreasing, col = "Blue")
+```
