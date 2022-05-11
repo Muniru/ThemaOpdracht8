@@ -1,0 +1,114 @@
+---
+title: "ThemaOpdracht"
+author: "Muniru"
+date: "25/04/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+```
+# Thema Opdracht 8
+
+## Les 1 Opdrachten
+
+### 1.0
+
+```{python}
+rate = lambda Y : (Y + 10) * .9
+value = 0
+previous = 0
+for n in range(30):
+    print(f"{n}\tValue:{value} \tPrevious:{previous}")
+    previous = value
+    value = round(rate(value))
+```
+
+[1] Welke parameters (constantes) zitten er in de vergelijking?
+
+    De +10.
+[2] Welke variabele uit de vergelijking veranderd steeds?
+
+    Het aantal M&M's.
+[3] Wat is de initiele waarde van de variabele uit vraag 2?
+
+    0
+[4] Wat is het tijdsframe van dit experiment? (t = 0 tot t = ……. )
+
+    29
+[5] Wanneer is het evenwichtsmoment?
+
+    29
+[6] Uit welke variabele uit de vergelijking kunnen we dat aflezen?
+    
+    Dat is uit de input en output af te lezen want die zijn het zelfde.
+    
+### 2.0 
+
+```{r}
+library(deSolve)
+
+parameters <- c(addVolume = 10, pV = 0.1) 
+
+# define model 
+volume <- function(t,y,parms){
+  with(as.list(c(parms)),{
+         dY <- addVolume - pV * (y + addVolume)
+         return(list(c(dY)))
+       }
+       )
+}
+
+#initial state
+state <- c(Volume = 0)
+
+#define time sequence you want to run the model
+times <- seq(0, 100,  by = 1)
+
+# run simulation using continuous approach
+out  <- ode(times = times, y = state,   parms = parameters, func = volume, method = "euler")
+
+head(out)
+
+plot(out)
+
+```
+
+[1] Verander de parameters. Wat is het effect?
+
+    De add volume heeft effect op het volume waar die stagneerd. en de pV op de boog van de lijn.
+[2] Verander de initiële waarde. Wat is het effect?
+
+    Dit heeft invloed om hoe groot het verschil is tussen de waarden aan de y as.
+[3] Verander de timeframe. Wat is het effect?
+
+    Het effect hiervan is te zien op de lijn. Er komen minder meetwaarder en daardoor komen er minder hoeken      in de lijn
+[4] Verander het originele model zodat de correctie niet is op basis van (y+addVolume) maar y. Wanneer is er      nu een evenwichts toestand?
+
+    Bij 161.
+
+### 3.0
+
+Afwezig 
+
+## Week 1 Opdracht
+
+### 1.0
+
+[1] Welke parameters moet je programmeren?
+
+    R: Het nummer van transcripties
+    r: De afname van de snelheid van de transcripties
+    m: het nummer van nieuwe transcripties die worden geproduceerd per sec    
+[2] Zoek bronnen op internet die uitleggen waar de formule dR/dt = -rR + m vandaan komt.
+
+    https://arep.med.harvard.edu/pdf/Chen99.pdf
+[3] Teken het biologisch model en leg de vertaling naar de formule uit.
+
+![Genes---A--->mRNAs---B--->Degredation](images/Genes_Drawing.jpg)
+
+    
+[4] Wat is de return waarde van de model functie in R? Waarom return je die en niet R zelf?
+
+    Een List. Omdat je met een List van de waarden meer dingen kan doen. Dingen zoals meerdere libraries         gebruiken om nog aan de data te sleutelen.
