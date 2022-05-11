@@ -8,6 +8,7 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
+library(deSolve)
 ```
 # Thema Opdracht 8
 
@@ -16,6 +17,7 @@ library(reticulate)
 ### 1.0
 
 ```{python}
+# Using Reticulate library
 rate = lambda Y : (Y + 10) * .9
 value = 0
 previous = 0
@@ -47,8 +49,7 @@ for n in range(30):
 ### 2.0 
 
 ```{r}
-library(deSolve)
-
+# Using the deSolve library
 parameters <- c(addVolume = 10, pV = 0.1) 
 
 # define model 
@@ -72,7 +73,6 @@ out  <- ode(times = times, y = state,   parms = parameters, func = volume, metho
 head(out)
 
 plot(out)
-
 ```
 
 [1] Verander de parameters. Wat is het effect?
@@ -108,7 +108,37 @@ Afwezig
 
 ![Genes---A--->mRNAs---B--->Degredation](images/Genes_Drawing.jpg)
 
-    
+    >Uitleg<
 [4] Wat is de return waarde van de model functie in R? Waarom return je die en niet R zelf?
 
     Een List. Omdat je met een List van de waarden meer dingen kan doen. Dingen zoals meerdere libraries         gebruiken om nog aan de data te sleutelen.
+    
+### 2.0
+
+```{r}
+# Using the deSolve library
+parameters <- c(m = 3, r = .1)
+
+# define model 
+volume <- function(t,y,parms){
+  with(as.list(c(parms)),{
+         dY <- m - r * y 
+         return(list(c(dY)))
+       }
+    )
+}
+
+#initial state
+state <- c(R = 100)
+
+#define time sequence you want to run the model
+times <- seq(0, 100,  by = 1)
+
+# run simulation using continuous approach
+out  <- ode(times = times, y = state,   parms = parameters, func = volume, method = "euler")
+
+head(out)
+
+plot(out)
+```
+
