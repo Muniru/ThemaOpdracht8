@@ -10,5 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # WEEK OPDRACHT 2
-Corticosteroïden zijn er in twee vormen: glucocorticoïden en mineralocorticoïden. De glucocorticoïden bevorderen de omzetting van eiwitten en vetten naar glucose, dit heeft dan ook weer invloed op het bloedsuikergehalte. Daarnaast hebben ze een belangrijke functie bij het reguleren van het immuunsysteem.
+Corticosteroïden zijn er in twee vormen: glucocorticoïden en mineralocorticoïden. De glucocorticoïden bevorderen de
+omzetting van eiwitten en vetten naar glucose, dit heeft dan ook weer invloed op het bloedsuikergehalte. Daarnaast
+hebben ze een belangrijke functie bij het reguleren van het immuunsysteem, worden ze afgegeven bij stress en
+onderdrukken ze ontstekingsreacties. De mineralocorticicoïden zijn vooral belangrijk voor de bloeddruk, water- en
+zouthuishouding, de terugresorptie in de nieren van water en natrium en de excretie van kalium in de nieren. In deze
+opdracht word vooral gefocust op de glucocorticoïden en dan specifiek methylprednisolon, vanwege het onderdrukken van
+ontstekingsreacties.
 
