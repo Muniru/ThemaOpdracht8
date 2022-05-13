@@ -1,0 +1,14 @@
+---
+title: "Week_Opdracht2"
+author: "Muniru & Sam"
+date: "11/05/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# WEEK OPDRACHT 2
+
+
