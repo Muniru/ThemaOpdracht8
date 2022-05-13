@@ -11,3 +11,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # WEEK OPDRACHT 2
 
+Wanneer het geneesmiddel wordt toegediend. Deze bind zich aan het MPL-receptor, wat een MPL-receptor complex vormt. Dit complex verplaatst zich naar de nucleus. Als de concentratie in nucleus een waarde bereikt dan wordt de aanmaak van de receptor mRNA geremd tot 50% van de beginwaarde.
+
+## Functions
+
+$$ \frac {dmRNA_{R}}{dt} = k_{s\_Rm}\ \biggl(1-\frac {DR(N)}{IC_{50\_Rm} +DR(N)}\biggr) - k_{d\_Rm} * mRNA_{R} $$
+
+$$\frac {dR}{dt} = k_{s\_R} * mRNA_{R} + R_{f} * k_{re} * DR(N) - k_{on} * D *R - k_{d\_R} * R   $$
+
+$$\ \frac {dDR}{dt} = k_{on} * D * R - k_{\tau} * DR $$
+
+$$\ \frac {dDRN(N)}{dt} = k_{\tau} *DR - k_{re} *DR(N)  $$
+
+```{r}
+# Define the parameters
+parameters <- c(kd_Rm = 0.612, ks_Rm = 2.90, ks_r = 3.22, 
+                kd_R = 0.0572, D=53.409, k_on= 0.00329, IC50_Rm = 26.2,
+                k_t = 0.63, k_re = 0.57, Rf = 0.49) 
+```
