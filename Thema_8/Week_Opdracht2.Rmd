@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # WEEK OPDRACHT 2
+## 1.
 Corticosteroïden zijn er in twee vormen: glucocorticoïden en mineralocorticoïden. De glucocorticoïden bevorderen de
 omzetting van eiwitten en vetten naar glucose, dit heeft dan ook weer invloed op het bloedsuikergehalte. Daarnaast
 hebben ze een belangrijke functie bij het reguleren van het immuunsysteem, worden ze afgegeven bij stress en
@@ -18,3 +19,11 @@ zouthuishouding, de terugresorptie in de nieren van water en natrium en de excre
 opdracht word vooral gefocust op de glucocorticoïden en dan specifiek methylprednisolon, vanwege het onderdrukken van
 ontstekingsreacties.
 
+
+## 3.
+
+```{r model}
+library(deSolve)
+
+model <- function()
+```
