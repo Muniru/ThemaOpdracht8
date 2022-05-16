@@ -11,6 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # WEEK OPDRACHT 2
 
+## Introductie
+
+Corticosteroïden zijn er in twee vormen: glucocorticoïden en mineralocorticoïden. De glucocorticoïden bevorderen de omzetting van eiwitten en vetten naar glucose, dit heeft dan ook weer invloed op het bloedsuikergehalte. Daarnaast hebben ze een belangrijke functie bij het reguleren van het immuunsysteem, worden ze afgegeven bij stress en onderdrukken ze ontstekingsreacties. De mineralocorticicoïden zijn vooral belangrijk voor de bloeddruk, water- en zouthuishouding, de terugresorptie in de nieren van water en natrium en de excretie van kalium in de nieren. In deze opdracht word vooral gefocust op de glucocorticoïden en dan specifiek methylprednisolon, vanwege het onderdrukken van ontstekingsreacties.
+
 Wanneer het geneesmiddel wordt toegediend. Deze bind zich aan het MPL-receptor, wat een MPL-receptor complex vormt. Dit complex verplaatst zich naar de nucleus. Als de concentratie in nucleus een waarde bereikt dan wordt de aanmaak van de receptor mRNA geremd tot 50% van de beginwaarde.
 
 ## Functions
@@ -21,7 +25,8 @@ $$\frac {dR}{dt} = k_{s\_R} * mRNA_{R} + R_{f} * k_{re} * DR(N) - k_{on} * D *R 
 
 $$\ \frac {dDR}{dt} = k_{on} * D * R - k_{\tau} * DR $$
 
-$$\ \frac {dDRN(N)}{dt} = k_{\tau} *DR - k_{re} *DR(N)  $$
+$$\ \frac {dDRN(N)}{dt} = k_{\tau} *DR - k_{re} *DR(N)  $$ 
+\newpage
 
 ## Code
 
@@ -51,8 +56,7 @@ model <- function(t, y, parms){
     dDRN_dt <- Kt * DR - Kre * DRN
     
     return(list(c(dmRNA.R_dt, dR_dt, dDR_dt, dDRN_dt)))
-    }
-    )
+    })
 }
 
 # Initial values
