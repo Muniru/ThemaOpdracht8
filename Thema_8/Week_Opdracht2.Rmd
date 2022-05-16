@@ -33,7 +33,7 @@ parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2,
 
 model <- function(t, y, parms){
   with(as.list(c(y, parms)), {
-    dmRNA.R_dt <- Ks_Rm * (1 - (DRN/IC50_Rm+DRN)) - Kd_Rm * mRNA.R
+    dmRNA.R_dt <- Ks_Rm * (1 - (DRN/ (IC50_Rm + DRN))) - Kd_Rm * mRNA.R
     dR_dt <- Ks_r * mRNA.R + Rf * Kre * DRN - Kon * D * R - Kd_R * R
     dDR_dt <- Kon * D * R - Kt * DR
     dDRN_dt <- Kt * DR - Kre * DRN
