@@ -25,5 +25,21 @@ ontstekingsreacties.
 ```{r model}
 library(deSolve)
 
-model <- function()
+parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
+                Kd_R = 0.0572, Rf = 0.49, Kon= 0.00329,
+                Kt = 0.63, D=53.409, Ks_r = 3.22)
+
+model <- function(){
+  with(as.list(c(y, parms)),{
+    dmRNA.R_dt <- Ks_Rm * (1 - (DRN/IC50_Rm+DRN)) - Kd_Rm * mRNA.R
+    dR_dt <- Ks_r* mRNA.R + Rf * Kre * DRN - Kon * D * R - Kd_R * R
+    dDR_dt <- Kon * D * R - Kt * DR
+    dDRN_dt <- Kt * DR - Kre * DRN
+    return(as.list(dmRNA.R_dt, dR_dt, dDR_dt, dDRN_dt))
+    }
+    )
+}
+
+state <- c(Rm0 = 4.74, R0 = 267, DR = 0, DRN = 0)
+times <- seq(0, 48, by = 1)
 ```
