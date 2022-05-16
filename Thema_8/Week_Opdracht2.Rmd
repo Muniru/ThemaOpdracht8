@@ -23,32 +23,57 @@ $$\ \frac {dDR}{dt} = k_{on} * D * R - k_{\tau} * DR $$
 
 $$\ \frac {dDRN(N)}{dt} = k_{\tau} *DR - k_{re} *DR(N)  $$
 
+## Code
 ```{r}
 library(deSolve)
 
+
+D.MRNA <- 53.409
 # Define the parameters
 parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
                 Kd_R = 0.0572, Rf = 0.49, Kon= 0.00329,
-                Kt = 0.63, D=53.409, Ks_r = 3.22)
+                Kt = 0.63, D=D.MRNA, Ks_r = 3.22)
 
 model <- function(t, y, parms){
   with(as.list(c(y, parms)),{
+    # Concentratie Receptor mRNA
     dmRNA.R_dt <- Ks_Rm * (1 - (DRN/IC50_Rm+DRN)) - Kd_Rm * mRNA.R
+    
+    # Het basisniveau van de\n concentratie vrije receptor
     dR_dt <- Ks_r* mRNA.R + Rf * Kre * DRN - Kon * D * R - Kd_R * R
+    
+    # De dichtheid van \nhet MPL-receptor complex
     dDR_dt <- Kon * D * R - Kt * DR
+    
+    # De hoeveelheid MPL-receptor\n complex in de celkern
     dDRN_dt <- Kt * DR - Kre * DRN
-    return(as.list(dmRNA.R_dt, dR_dt, dDR_dt, dDRN_dt))
+    
+    return(list(c(dmRNA.R_dt, dR_dt, dDR_dt, dDRN_dt)))
     }
     )
 }
 
 
-state <- c(Rm0 = 4.74, R0 = 267, DR = 0, DRN = 0)
-times <- seq(0, 48, by = 1)
+state <- c(mRNA.R = 4.74,
+           R = 267,
+           DR = 0,
+           DRN = 0)
 
-out  <- ode(times = times, y = state,   parms = parameters, func = model, 
+times <- seq(0,
+             48,
+             by = 1)
+
+out  <- ode(times = times,
+            y = state,
+            parms = parameters,
+            func = model, 
             method = "euler")
 
 head(out)
 
+plot(out, main=c("Concentratie Receptor mRNA",
+                 "Het basisniveau van de\n concentratie vrije receptor",
+                 "De dichtheid van \nhet MPL-receptor complex",
+                 "De hoeveelheid MPL-receptor\n complex in de celkern"))
 ```
+## Conclusion
