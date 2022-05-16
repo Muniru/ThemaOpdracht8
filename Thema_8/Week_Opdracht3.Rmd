@@ -1,0 +1,18 @@
+---
+title: "Week_Opdracht3"
+author: "Muniru & Sam"
+date: '2022-05-16'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Week Opdracht 3
+
+```{r input data}
+data <- read.csv("MPL.csv", na.strings = "NA")
+median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
+median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
+```
