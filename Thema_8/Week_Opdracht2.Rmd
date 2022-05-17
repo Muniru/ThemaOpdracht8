@@ -1,0 +1,89 @@
+---
+title: "Week_Opdracht2"
+author: "Muniru & Sam"
+date: "11/05/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# WEEK OPDRACHT 2
+
+## Introductie
+
+Corticosteroïden zijn er in twee vormen: glucocorticoïden en mineralocorticoïden. De glucocorticoïden bevorderen de omzetting van eiwitten en vetten naar glucose, dit heeft dan ook weer invloed op het bloedsuikergehalte. Daarnaast hebben ze een belangrijke functie bij het reguleren van het immuunsysteem, worden ze afgegeven bij stress en onderdrukken ze ontstekingsreacties. De mineralocorticicoïden zijn vooral belangrijk voor de bloeddruk, water- en zouthuishouding, de terugresorptie in de nieren van water en natrium en de excretie van kalium in de nieren. In deze opdracht word vooral gefocust op de glucocorticoïden en dan specifiek methylprednisolon, vanwege het onderdrukken van ontstekingsreacties.
+
+Wanneer het geneesmiddel wordt toegediend. Deze bind zich aan het MPL-receptor, wat een MPL-receptor complex vormt. Dit complex verplaatst zich naar de nucleus. Als de concentratie in nucleus een waarde bereikt dan wordt de aanmaak van de receptor mRNA geremd tot 50% van de beginwaarde.
+
+## Functions
+
+$$ \frac {dmRNA_{R}}{dt} = k_{s\_Rm}\ \biggl(1-\frac {DR(N)}{IC_{50\_Rm} +DR(N)}\biggr) - k_{d\_Rm} * mRNA_{R} $$
+
+$$\frac {dR}{dt} = k_{s\_R} * mRNA_{R} + R_{f} * k_{re} * DR(N) - k_{on} * D *R - k_{d\_R} * R   $$
+
+$$\ \frac {dDR}{dt} = k_{on} * D * R - k_{\tau} * DR $$
+
+$$\ \frac {dDRN(N)}{dt} = k_{\tau} *DR - k_{re} *DR(N)  $$ 
+\newpage
+
+## Code
+
+```{r}
+library(deSolve)
+
+# Define the parameters
+volume_D <- 20
+nmol <- volume_D * 1000 * (1 / 374.477) 
+parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
+                Kd_R = 0.0572, Rf = 0.49, Kon= 0.00329,
+                Kt = 0.63, D=nmol, Ks_r = 3.22)
+
+# The model we will use
+model <- function(t, y, parms){
+  with(as.list(c(y, parms)),{
+    # Concentratie Receptor mRNA
+    dmRNA.R_dt <- Ks_Rm * (1 - (DRN/(IC50_Rm+DRN))) - Kd_Rm * mRNA.R
+    
+    # Het basisniveau van de concentratie vrije receptor
+    dR_dt <- Ks_r* mRNA.R + Rf * Kre * DRN - Kon * D * R - Kd_R * R
+    
+    # De dichtheid van het MPL-receptor complex
+    dDR_dt <- Kon * D * R - Kt * DR
+    
+    # De hoeveelheid MPL-receptor complex in de celkern
+    dDRN_dt <- Kt * DR - Kre * DRN
+    
+    return(list(c(dmRNA.R_dt, dR_dt, dDR_dt, dDRN_dt)))
+    })
+}
+
+# Initial values
+state <- c(mRNA.R = 4.74,
+           R = 267,
+           DR = 0,
+           DRN = 0)
+
+times <- seq(0,
+             48,
+             by = 1)
+
+# Using the model with our parameters and initial values
+out  <- ode(times = times,
+            y = state,
+            parms = parameters,
+            func = model, 
+            method = "euler")
+
+# Plotting the values
+plot(out, main=c("Concentratie receptor mRNA",
+                 "Concentratie vrije receptor",
+                 "Dichtheid receptor complex",
+                 "Hoeveelheid\nreceptor complex in celkern"),
+     xlab="Hours")
+```
+
+## Conclusie
+
+Wanneer het MPL in de cel komt wordt dit gebonden aan het aan de MPL-receptoren om een MPL-complex te vormen. Hierdoor schiet de dichtheid van receptor complexen in het cytosol omhoog. Deze complexen worden getransporteerd naar de nucleus waar het een invloed heeft op verschillende factoren. Één van die factoren is de aanmaak van nieuwe receptoren. Wanneer de concentratie MPL-receptor complexen stijgt in de nucleus wordt de aanmaak van de receptoren verminderd, doordat het DNA minder wordt afgeschreven. Dit is ook te zien in de concentratie mRNA wat aanwezig is. Wanneer de hoeveelheid complexen in de cel afneemt komt de concentratie mRNA ook weer omhoog. Hier wordt het dus minder geïnhibeerd.
