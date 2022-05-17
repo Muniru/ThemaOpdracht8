@@ -1,0 +1,54 @@
+---
+title: "Week_Opdracht2"
+author: "Muniru & Sam"
+date: "11/05/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# WEEK OPDRACHT 2
+
+Wanneer het geneesmiddel wordt toegediend. Deze bind zich aan het MPL-receptor, wat een MPL-receptor complex vormt. Dit complex verplaatst zich naar de nucleus. Als de concentratie in nucleus een waarde bereikt dan wordt de aanmaak van de receptor mRNA geremd tot 50% van de beginwaarde.
+
+## Functions
+
+$$ \frac {dmRNA_{R}}{dt} = k_{s\_Rm}\ \biggl(1-\frac {DR(N)}{IC_{50\_Rm} +DR(N)}\biggr) - k_{d\_Rm} * mRNA_{R} $$
+
+$$\frac {dR}{dt} = k_{s\_R} * mRNA_{R} + R_{f} * k_{re} * DR(N) - k_{on} * D *R - k_{d\_R} * R   $$
+
+$$\ \frac {dDR}{dt} = k_{on} * D * R - k_{\tau} * DR $$
+
+$$\ \frac {dDRN(N)}{dt} = k_{\tau} *DR - k_{re} *DR(N)  $$
+
+```{r}
+library(deSolve)
+
+# Define the parameters
+parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
+                Kd_R = 0.0572, Rf = 0.49, Kon= 0.00329,
+                Kt = 0.63, D=53.409, Ks_r = 3.22)
+
+model <- function(t, y, parms){
+  with(as.list(c(y, parms)),{
+    dmRNA.R_dt <- Ks_Rm * (1 - (DRN/IC50_Rm+DRN)) - Kd_Rm * mRNA.R
+    dR_dt <- Ks_r* mRNA.R + Rf * Kre * DRN - Kon * D * R - Kd_R * R
+    dDR_dt <- Kon * D * R - Kt * DR
+    dDRN_dt <- Kt * DR - Kre * DRN
+    return(as.list(dmRNA.R_dt, dR_dt, dDR_dt, dDRN_dt))
+    }
+    )
+}
+
+
+state <- c(Rm0 = 4.74, R0 = 267, DR = 0, DRN = 0)
+times <- seq(0, 48, by = 1)
+
+out  <- ode(times = times, y = state,   parms = parameters, func = model, 
+            method = "euler")
+
+head(out)
+
+```
