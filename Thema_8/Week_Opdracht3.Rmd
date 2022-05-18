@@ -1,7 +1,7 @@
 ---
 title: "Week_Opdracht3"
 author: "Muniru & Sam"
-date: "18/05/2022"
+date: '2022-05-16'
 output: pdf_document
 ---
 
@@ -9,5 +9,66 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# WEEK OPDRACHT 2
+# Week Opdracht 3
 
+```{r input data}
+library(deSolve)
+library(ggplot2)
+
+data <- read.csv("data/MPL.csv", na.strings = "NA")
+median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
+median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
+
+
+# Define the parameters
+volume_D <- 20
+nmol <- volume_D * 1000 * (1 / 374.477) 
+parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
+                Kd_R = 0.0572, Rf = 0.49, Kon= 0.00329,
+                Kt = 0.63, D=nmol, Ks_r = 3.22)
+
+# The model we will use
+model <- function(t, y, parms){
+  with(as.list(c(y, parms)),{
+    # Concentratie Receptor mRNA
+    dmRNA.R_dt <- Ks_Rm * (1 - (DRN/(IC50_Rm+DRN))) - Kd_Rm * mRNA.R
+    
+    # Het basisniveau van de concentratie vrije receptor
+    dR_dt <- Ks_r* mRNA.R + Rf * Kre * DRN - Kon * D * R - Kd_R * R
+    
+    # De dichtheid van het MPL-receptor complex
+    dDR_dt <- Kon * D * R - Kt * DR
+    
+    # De hoeveelheid MPL-receptor complex in de celkern
+    dDRN_dt <- Kt * DR - Kre * DRN
+    
+    return(list(c(dmRNA.R_dt, dR_dt, dDR_dt, dDRN_dt)))
+    })
+}
+
+# Initial values
+state <- c(mRNA.R = 4.74,
+           R = 267,
+           DR = 0,
+           DRN = 0)
+
+times <- seq(0,
+             168,
+             by = 1)
+
+# Using the model with our parameters and initial values
+out  <- ode(times = times,
+            y = state,
+            parms = parameters,
+            func = model, 
+            method = "euler")
+out <- data.frame(out)
+
+medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,data$time), median, na.rm=T)
+names(medians)[1:2] <- c("dose","time")
+
+
+head(medians)
+ggplot(medians, aes(x=time)) + geom_point(aes(y=mRNA)) + geom_line(aes(y=)) 
+  
+```
