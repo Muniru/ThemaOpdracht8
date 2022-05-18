@@ -21,7 +21,7 @@ median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
 
 
 # Define the parameters
-volume_D <- 20
+volume_D <- median_MPL_03
 nmol <- volume_D * 1000 * (1 / 374.477) 
 parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
                 Kd_R = 0.0572, Rf = 0.49, Kon= 0.00329,
@@ -62,13 +62,48 @@ out  <- ode(times = times,
             parms = parameters,
             func = model, 
             method = "euler")
+out1 <- data.frame(out)
+
+volume_D <- median_MPL_01
+nmol <- volume_D * 1000 * (1 / 374.477) 
+parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
+                Kd_R = 0.0572, Rf = 0.49, Kon= 0.00329,
+                Kt = 0.63, D=nmol, Ks_r = 3.22)
+
+# Using the model with our parameters and initial values
+out  <- ode(times = times,
+            y = state,
+            parms = parameters,
+            func = model, 
+            method = "euler")
 out <- data.frame(out)
+plot(out1$mRNA.R)
+lines(out$mRNA.R, col="red")
 
 medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,data$time), median, na.rm=T)
 names(medians)[1:2] <- c("dose","time")
 
+md <- aggregate(data$mRNA,list(data$time), median, na.rm=T)
 
-head(medians)
-ggplot(medians, aes(x=time)) + geom_point(aes(y=mRNA)) + geom_line(aes(y=)) 
+names(md)[1:2] <- c("time", "median")
+
+ggplot() + geom_point(data, mapping=aes(x=time, y=mRNA)) + geom_line(out, mapping=aes(x=time, y=mRNA.R)) + geom_line(md, mapping = aes(x=time, y=median))
   
 ```
+[1] Why is it best practice to plot the median for the experimental data? Explain in your report
+
+    In experimentele data kunnen snel uitschieters voorkomen. Als je het 
+    gemmiddelde zal pakken dan wil zal dit verder uitwijken. daarom is het meer 
+    betrouwbaar om het mediaan te pakken.
+[2] How do the results of the simulations depend on the dose and concentration of the drug? Compare the
+model variables mRNA, R with the experimental data by running the simulations adjusting dosis D and plot these to find the answer.
+
+    Wanneer de dosis hogere(0.3) is wordt de mrna transcriptie meer geremd dan 
+    met een lagere dosis. Het aantal vrije receptoren neemt sneller af met een 
+    hogere dosis.
+[3] Are the results of the model in line with experimental data? If not, what could be the reason? Think of at least one explanation. Try to test it with simulations (you will get bonus points for that, your explanation does not need to be correct, but should be logical).
+    
+    
+    Ja, Dat is te herleiden uit het figuur. Daar is te zien dat de waarden 
+    gegroepeerd dalen via dezelfde tijdseenheid als bij het model. 
+    
