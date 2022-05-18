@@ -10,16 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Week Opdracht 3
-
-```{r input data}
-data <- read.csv("MPL.csv", na.strings = "NA")
-median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
-median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
-```
-
 ```{r}
 library(deSolve)
 library(ggplot2)
+
+data <- read.csv("MPL.csv", na.strings = "NA")
+median_MPL_01 <- median(data$MPL_conc[data$dose==0.1], na.rm=T)
+median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
+
 
 # Define the parameters
 volume_D <- 20
@@ -63,12 +61,10 @@ out  <- ode(times = times,
             parms = parameters,
             func = model, 
             method = "euler")
+out <- data.frame(out)
 
-# Plotting the values
-plot(out, main=c("Concentratie receptor mRNA",
-                 "Concentratie vrije receptor",
-                 "Dichtheid receptor complex",
-                 "Hoeveelheid\nreceptor complex in celkern"),
-     xlab="Hours")
+medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,data$time), median, na.rm=T)
+names(medians)[1:2] <- c("dose","time")
 
+ggplot() + geom_point(medians, mapping=aes(x=time, y=mRNA)) + geom_line(out, mapping=aes(x=time, y=mRNA.R))
 ```
