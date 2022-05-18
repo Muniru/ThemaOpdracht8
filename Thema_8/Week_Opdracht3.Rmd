@@ -9,7 +9,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Week Opdracht 3
+# Week Opdracht 3
 
 ```{r input data}
 data <- read.csv("MPL.csv", na.strings = "NA")
@@ -19,6 +19,7 @@ median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
 
 ```{r}
 library(deSolve)
+library(ggplot2)
 
 # Define the parameters
 volume_D <- 20
@@ -53,7 +54,7 @@ state <- c(mRNA.R = 4.74,
            DRN = 0)
 
 times <- seq(0,
-             48,
+             168,
              by = 1)
 
 # Using the model with our parameters and initial values
@@ -69,4 +70,5 @@ plot(out, main=c("Concentratie receptor mRNA",
                  "Dichtheid receptor complex",
                  "Hoeveelheid\nreceptor complex in celkern"),
      xlab="Hours")
+
 ```
