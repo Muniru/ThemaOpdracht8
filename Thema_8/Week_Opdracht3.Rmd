@@ -20,7 +20,7 @@ median_MPL_03 <- median(data$MPL_conc[data$dose==0.3], na.rm=T)
 
 
 # Define the parameters
-volume_D <- 20
+volume_D <- median_MPL_03
 nmol <- volume_D * 1000 * (1 / 374.477) 
 parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
                 Kd_R = 0.0572, Rf = 0.49, Kon= 0.00329,
@@ -63,8 +63,12 @@ out  <- ode(times = times,
             method = "euler")
 out <- data.frame(out)
 
-medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")],list(data$dose,data$time), median, na.rm=T)
+medians <- aggregate(data[,c("MPL_conc","mRNA","Free_receptor")], list(data$dose,data$time), median, na.rm=T)
 names(medians)[1:2] <- c("dose","time")
 
-ggplot() + geom_point(medians, mapping=aes(x=time, y=mRNA)) + geom_line(out, mapping=aes(x=time, y=mRNA.R))
+ggplot() + 
+  geom_point(data, mapping = aes(x=time, y=mRNA), colour = "red") + 
+  geom_line(out, mapping = aes(x=time, y=mRNA.R)) + 
+  geom_line(subset(medians, dose %in% c("0", "0.1")), mapping = aes(x = time, y = mRNA), colour = "blue") +
+  geom_line(subset(medians, dose %in% c("0", "0.3")), mapping = aes(x = time, y = mRNA), colour = "green")
 ```
