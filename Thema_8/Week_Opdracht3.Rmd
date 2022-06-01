@@ -271,7 +271,6 @@ ggplot() +
 
 [3] Different corticosteroids show different association rates from receptors (kon) and different dissociation rates (in this model reflected by kre). Assuming the same concentrations of the drug, what is the effect of different values of kon and kre (consider 2 and 5 times increase and decrease of both parameters separately) on the receptor and mRNA dynamics? Adjust kon and kre as below and plot the results of the simulation for each change. Note: Simulations should be run for 4 new values of kon: 0.00329/5, 0.00329/2, 0.00329*2 and 0.00329*5. The results should be compared to the basic scenario when kon=0.00329 Separately, simulations should be run for 4 new values of kre: 0.57/5, 0.57/2, 0.57*2 and 0.57*5. The results should be compared to the basic scenario when kre= 0.57.
 ```{r}
-
 # Initial values
 state <- c(mRNA.R = 4.74,
            R = 267,
@@ -281,23 +280,25 @@ state <- c(mRNA.R = 4.74,
 times <- seq(0,
              168,
              by = 1)
+
 kon_var <-c(0.00329/5,
          0.00329/2,
          0.00329*2,
          0.00329*5)
 
-plot_series <- function(y_kon){
+plot_series <- function(y_kon=0.00329){
+  
     parameters <- c(Kd_Rm = 0.612, Kre = 0.57, Ks_Rm = 2.90, IC50_Rm = 26.2, 
                 Kd_R = 0.0572, Rf = 0.49, Kon= y_kon,
                 Kt = 0.63, D=20*1000/374.471, Ks_r = 3.22)
   
-
 
   output  <- data.frame(ode(times = times,
               y = state,
               parms = parameters,
               func = model, 
               method = "euler"))
+  
   # Data plotting
   print(ggplot() +
     geom_line(output, mapping = aes(x=time, y=mRNA.R)))
