@@ -10,5 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-parameters <- 
+parameters <- c(m = 0.445, r = 0.11,
+                rho = 1.29, c = 0.5,
+                mu = 0.1, g = 9.81)
 ```
