@@ -281,6 +281,8 @@ plot_series <- function(y_kon){
   
   plot_2 <- ggplot() +
               geom_line(output, mapping = aes(x=time, y=R))
+  
+  return(grid.arrange(plot_1, plot_2))
 }
 
 lapply(kon_var, plot_series)
