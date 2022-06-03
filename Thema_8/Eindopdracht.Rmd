@@ -1,0 +1,13 @@
+---
+title: "How to calculate a football trajectory"
+author: "Muniru & Sam"
+date: "01/06/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
