@@ -20,13 +20,13 @@ parameters <- c(m = 0.445, r = 0.11,
                 mu = 0.1, g = 9.81)
 
 state_straight <- c(omega = c(x = 0, y = 0, z = 0),
-                    velocity = c(x = 5, y = 28, z = 11),
+                    velocity = c(x = 5, y = 28, z = 11))
 
 state_curve <- c(omega = c(x = 2, y = -2, z = 16),
-                 velocity = c(x = 5, y = 28, z = 11),
+                 velocity = c(x = 5, y = 28, z = 11))
 
 state_up <- c(omega = c(x = 13, y = 0, z = 0),
-              velocity = c(x = 5, y = 28, z = 11),
+              velocity = c(x = 5, y = 28, z = 11))
 
 times <- seq(0, 100, by = 1)
 
