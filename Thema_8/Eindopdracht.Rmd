@@ -18,32 +18,28 @@ library(pracma)
 
 parameters <- c(m = 0.445, r = 0.11,
                 rho = 1.29, c = 0.05,
-                mu = 0.1, g = -9.81)
+                mu = 0.1, g = c(x = 0, y = 9.81))
 
-state_straight <- c(velocity = c(x = 5, y = 28, z = 11),
-                    position = c(x = 7.23, y = 0, z = 0))
+state_straight <- c(velocity = c(x = 0, y = 0),
+                    position = c(x = 0, y = 0))
 
-state_curve <- c(velocity = c(x = 5, y = 28, z = 11),
-                 position = c(x = 7.23, y = 0, z = 0))
-
-state_up <- c(velocity = c(x = 5, y = 28, z = 11),
-              position = c(x = 7.23, y = 0, z = 0))
-
-times <- seq(0, 1, by = 1)
+times <- seq(0, 5, by = 1)
 
 model <- function(t, y, parms){
   with(as.list(c(y, parms)), {
-    velocity <- c(velocity.x, velocity.y, velocity.z)
+    velocity <- c(velocity.x, velocity.y)
     F_air <- -c * velocity^2
     F_zw <- m * g
-    F_tot <- F_air + F_zw
+    F_tot <- F_zw + F_air       
     acc <- F_tot / m
-    print(acc)
-    return(list(c(velocity.x, velocity.y, velocity.z, position.x, position.y, position.z)))
+    delta_v <- acc * t 
+    print(delta_v)
+    
+    return(list(c(delta_v, position.x, position.y)))
   }
   )
 }
 
-out <- as.data.frame(ode(times = times, y = state_up, parms = parameters, func = model, method = "euler"))
+out <- as.data.frame(ode(times = times, y = state_straight, parms = parameters, func = model, method = "euler"))
 
 ```
