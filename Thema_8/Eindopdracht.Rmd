@@ -17,29 +17,35 @@ library(deSolve)
 library(pracma)
 
 parameters <- c(m = 0.445, r = 0.11,
-                rho = 1.29, c = 0.05,
-                mu = 0.1, g = c(x = 0, y = 9.81))
+                rho = 1.29, c = 0.5,
+                mu = 0.1, g = c(x = 0, y = - 9.81),
+                dt = 0.005)
 
-state_straight <- c(velocity = c(x = 0, y = 0),
+state_straight <- c(velocity = c(x = 28.97, y = 7.76),
                     position = c(x = 0, y = 0))
 
-times <- seq(0, 5, by = 1)
+times <- seq(0, 2, by = parameters["dt"])
 
 model <- function(t, y, parms){
   with(as.list(c(y, parms)), {
+    g <- c(g.x, g.y)
     velocity <- c(velocity.x, velocity.y)
-    F_air <- -c * velocity^2
-    F_zw <- m * g
-    F_tot <- F_zw + F_air       
+    position <- c(position.x, position.y)
+    vel_tot <- sqrt(velocity.x^2 + velocity.y^2)
+    k = (1/2) * c * rho * (pi * r^2)
+    F_tot <- m * g - k * velocity * vel_tot
     acc <- F_tot / m
-    delta_v <- acc * t 
-    print(delta_v)
+    delta_v <- velocity + acc * dt
+    pos <- position + delta_v * dt
     
-    return(list(c(delta_v, position.x, position.y)))
+    print(pos)
+    return(list(c(acc, pos)))
   }
   )
 }
 
 out <- as.data.frame(ode(times = times, y = state_straight, parms = parameters, func = model, method = "euler"))
+
+plot(out)
 
 ```
