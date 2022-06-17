@@ -18,13 +18,12 @@ library(pracma)
 
 parameters <- c(m = 0.445, r = 0.11,
                 rho = 1.29, c = 0.5,
-                mu = 0.1, g = c(x = 0, y = - 9.81),
-                dt = 0.005)
-
-state_straight <- c(velocity = c(x = 28.97, y = 7.76),
+                mu = 0.1, g = c(x = 0, y = - 9.81))
+v <- 30
+state_straight <- c(velocity = c(x = v*cos(15*pi/180), y = v*sin(15*pi/180)),
                     position = c(x = 0, y = 0))
 
-times <- seq(0, 2, by = parameters["dt"])
+times <- seq(0, 10, by = 0.01)
 
 model <- function(t, y, parms){
   with(as.list(c(y, parms)), {
@@ -35,17 +34,15 @@ model <- function(t, y, parms){
     k = (1/2) * c * rho * (pi * r^2)
     F_tot <- m * g - k * velocity * vel_tot
     acc <- F_tot / m
-    delta_v <- velocity + acc * dt
-    pos <- position + delta_v * dt
     
-    print(pos)
-    return(list(c(acc, pos)))
+    return(list(c(acc, velocity)))
   }
   )
 }
 
 out <- as.data.frame(ode(times = times, y = state_straight, parms = parameters, func = model, method = "euler"))
+output <- subset(out, position.y > 0)
 
-plot(out)
+plot(output$position.x, output$position.y, type = "l")
 
 ```
