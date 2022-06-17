@@ -1,0 +1,61 @@
+---
+title: "Eindopdracht"
+author: "Muniru & Sam"
+date: '2022-06-03'
+output:
+  html_document:
+    toc: yes
+    toc_depth: '2'
+    df_print: paged
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(deSolve)
+library(pracma)
+library(plotly)
+r <- 0.11
+rho <- 1.29
+c <- 0.5
+
+parameters <- c(m = 0.445, k = (1/2) * c * rho * (pi * r^2),
+                mu = 0.1, g = c(x = 0, y = -9.81))
+
+v <- 30
+state_straight <- c(velocity = c(x = v*cos(15*pi/180), y = v*sin(15*pi/180)),
+                    position = c(x = 0, y = 0))
+
+times <- seq(0, 10, by = 0.01)
+
+model <- function(t, y, parms){
+  with(as.list(c(y, parms)), {
+    g <- c(g.x, g.y)
+    velocity <- c(velocity.x, velocity.y)
+    position <- c(position.x, position.y)
+    
+    acc <-  (m * g - k * velocity * sqrt(velocity.x^2 + velocity.y^2)) / m 
+    
+    return(list(c(acc, velocity)))
+  }
+  )
+}
+
+
+out <- as.data.frame(ode(times = times, y = state_straight, parms = parameters, func = model, method = "euler"))
+output <- subset(out, position.y > 0)
+output$position.z <- rep(0, length(output$time))
+
+plot(output$position.x, output$position.y, type = "l")
+fig <- plot_ly(output, x = ~position.z, y = ~position.x, z = ~position.y, type = 'scatter3d', mode = 'lines',
+        opacity = 1)
+
+fig
+```
+
+
