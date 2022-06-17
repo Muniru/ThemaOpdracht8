@@ -15,34 +15,41 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(deSolve)
 library(pracma)
-parameters <- c(m = 0.445, r = 0.11,
-                rho = 1.29, c = 0.5,
-                mu = 0.1, g = 9.81)
+r <- 0.11
+rho <- 1.29
+c <- 0.5
 
-state_straight <- c(velocity = c(x = 5, y = 28),
+parameters <- c(m = 0.445, k = (1/2) * c * rho * (pi * r^2),
+                mu = 0.1, g = c(x = 0, y = -9.81))
+
+state_straight <- c(velocity = c(x = 10, y = 5),
                     position = c(x = 0, y = 0))
 
-
-
-times <- seq(0, 10, by = 1)
-
+times <- seq(0, 10, 1)
 
 model <- function(t, y, parms){
   with(as.list(c(y, parms)), {
-    velocity <- c(x = velocity.x, y = velocity.y)
-    pos <- c(x = position.x, y = position.y)
-    F_air <- -c * velocity ^ 2
-    F_zw <- m * g
-    F_tot <- F_air + F_zw
-    print(y)
-    n_pos <- velocity + pos
-    return(list(c(velocity.x, velocity.y,
-                n_pos["x"], n_pos["y"])))
+    g <- c(g.x, g.y)
+    velocity <- c(velocity.x, velocity.y)
+    position <- c(position.x, position.y)
+    
+    acc <-  (m * g - k * velocity * sqrt(velocity.x^2 + velocity.y^2)) / m 
+    
+    
+    print(c(t, "time"))    
+    print(c(velocity, "velocity"))
+    print(c(acc, "acceleration"))
+    print("")
+
+    
+    return(list(c(acc, velocity)))
   }
   )
-} 
+}
 
 out <- as.data.frame(ode(times = times, y = state_straight, parms = parameters, func = model, method = "euler"))
+
+plot(out$position.y, type = "l")
 
 ```
 
