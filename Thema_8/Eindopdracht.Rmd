@@ -32,7 +32,9 @@ model <- function(t, y, parms){
     position <- c(position.x, position.y)
     vel_tot <- sqrt(velocity.x^2 + velocity.y^2)
     k = (1/2) * c * rho * (pi * r^2)
-    F_tot <- m * g - k * velocity * vel_tot
+    F_zw <- m * g
+    F_air <- -k * velocity * vel_tot
+    F_tot <- F_zw + F_air
     acc <- F_tot / m
     
     return(list(c(acc, velocity)))
